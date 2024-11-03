@@ -41,6 +41,8 @@ Node* newNode(char data) {
 
 Node* makeEXTree(); // make infix exp : A/B*C*D+E
 
+
+// inorder 탐색
 void inorder(Node* root) {
     if (root == NULL) return;
     if (root->leftChild != NULL) {
@@ -52,8 +54,7 @@ void inorder(Node* root) {
     }
 }
 
-///////////////아ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ 모르겠다.
-// 헷갈리면 참고해 보자: https://algorfati.tistory.com/229
+// 재귀를 이터레이티브 하게 만들기 -> 헷갈리면 참고해 보자: https://algorfati.tistory.com/229
 void iter_inorder(Node* root) {
     for(push(root, 0); isEmpty() == false; ) {
 
