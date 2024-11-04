@@ -52,7 +52,7 @@ Node* newNode(int data);
 
 
 int main() {
-    int inputData[] = {1, 2, 3, 4, 5, 6, 7, 8};
+    int inputData[] = {1, 2, 3, 4, 5, 6, 7, 8};     // 원소개수 8개
 
     Node* newTree = makeTree(inputData);
 
@@ -67,7 +67,7 @@ Node* makeTree(int inputData[]) {
     Node* root = newNode(inputData[0]);
     NP_push(root);
     
-    for (int i = 1; i < 8; i++) {
+    for (int i = 1; i < 8; i++) {   //  원소개수는 일단 8로 고정됨
         Node* tmp = newNode(inputData[i]);
         NP_push(tmp);
         if (NP_Q[NP_front]->leftchild == NULL) {
