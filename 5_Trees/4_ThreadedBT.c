@@ -5,14 +5,14 @@
 #include <stdbool.h>
 
 typedef struct Node {
-    int data;
+    char data;
     Node* leftchild;
     Node* rightchild;
     bool leftThread;
     bool rightThread;
 } Node;
 
-Node* newNode(int data) {
+Node* newNode(char data) {
     Node* nd = (Node*)malloc(sizeof(Node));
     nd->data = data;
     nd->leftchild = NULL;
@@ -23,6 +23,7 @@ Node* newNode(int data) {
     return nd;
 }
 
+/************making Threaded Tree****************/
 Node* findLeftTreadNode(Node* root) {
     if (root->leftThread == true) return root;
     return findLeftTreadNode(root->leftchild);
@@ -40,18 +41,19 @@ Node* insertLeft(Node* child, Node* parent) {
     }
 
     if (parent->leftThread == true) {           // 삽입하려는 노드의 부모될 노드가 리프노드라면
-        child->leftchild = parent->leftchild;
-        child->rightchild = parent;
-        parent->leftchild = child;
-        parent->leftThread = false;
+        child->leftchild = parent->leftchild;   // 삽입하려는 노드의 leftthread를 부모 노드의 leftthread로 설정
+        child->rightchild = parent;             // 삽입하려는 노드의 rightthread를 부모 노드로 설정
+        parent->leftchild = child;              // 부모의 leftchild를 삽입하려는 노드로 설정    **a.
+        parent->leftThread = false;             // 부모의 leftchild가 thread가 아니라고 설정
     }
     else {
-        child->leftchild = parent->leftchild;
-        parent->leftchild = child;
+        child->leftchild = parent->leftchild;   // 삽입하려는 노드의 leftthread를 부모 노드의 leftchild로 설정: 기존 하위 subtree이어붙이기
+        parent->leftchild = child;              // 부모의 leftchild를 삽입하려는 노드로 설정
 
-        child->leftThread = false;
-        child->rightThread = true;
-        child->rightchild = parent;
+        // 이 부분에선 위 코드의 a. 부분이 필요가 없음. 이미 false로 되어있을 것이기 때문
+
+        child->leftThread = false;              // 삽입하려는 노드의 leftchild가 thread가 아니라고 설정
+        child->rightchild = parent;             // 삽입하려는 노드의 rightthread를 부모 노드로 설정
 
         findRightTreadNode(child->leftchild)->rightchild = child;       //마지막 리프노드의 thread 링크 조정 => 삽입하려는 노드로
     }
@@ -60,11 +62,37 @@ Node* insertLeft(Node* child, Node* parent) {
 }
 
 Node* insertRight(Node* child, Node* parent) {
+    if (child->leftThread == false || child->rightThread == false) {
+        fprintf(stderr, "this node isn't thread. the data of node: %d", child->data);
+        exit(1);
+    }
 
+    if (parent->rightThread == true) {
+        child->rightchild = parent->rightchild;
+        child->leftchild = parent;
+        parent->rightchild = child;
+        parent->rightThread = false;
+    }
+    else {
+        child->rightchild = parent->rightchild;
+        parent->rightchild = child;
+        child->rightThread = false;
+        child->leftchild = parent;
+        
+        findLeftTreadNode(child->rightchild)->leftchild = child;
+    }
+
+    return child;
 }
+/******************end making Thread Tree**************/
+
+// Threaded inorder function
+
+// 만들어야 됨
+
 
 Node* newTree() {
-    Node* head = newNode(9876);     //쓰레기값을 포함함
+    Node* head = newNode('\0');     //쓰레기값을 포함함
     head->rightchild = head->leftchild = head;
 
     return head;        // head노드만 뱉어냄
@@ -73,12 +101,20 @@ Node* newTree() {
 int main() {
 
     Node* ThBT = newTree();
-    Node* tmp = insertLeft(newNode(1), ThBT);
-    
-    tmp = insertLeft(newNode(2), tmp);
-    tmp = tmp->rightchild;
+    Node* tmp = newNode('A');
 
-    tmp = insertLeft(newNode(0), tmp);
+    tmp = insertLeft(tmp, ThBT);
+
+    tmp = insertLeft(newNode('C'), tmp);
+    tmp = insertRight(newNode('D'), tmp);
+
+    insertLeft(newNode('E'), tmp);
+    insertRight(newNode('F'), tmp);
+
+    tmp = ThBT->leftchild;
+    tmp = insertRight(newNode('B'), tmp);
+    insertLeft(newNode('G'), tmp);
+
 
     return 0;
 }
