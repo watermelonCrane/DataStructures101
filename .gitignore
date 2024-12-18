@@ -1,0 +1,7 @@
+#: comment
+
+# ignore .exe
+*.exe
+
+# ignore git settingfile
+.vscode/

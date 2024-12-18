@@ -1,4 +1,5 @@
 // 과제: list에서 배운 getNode와 retNode를 이용해서 노드 삭제와 삽입을 해보자.
+// 해당 코드는 원초적인 사고를 이용해서 삽입을 구현했음. 다른 파일에서 insucc함수를 이해하면서 원래 코드의 의도를 이해 할 수 있음.
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -6,8 +7,8 @@
 
 typedef struct Node {
     char data;
-    Node* leftchild;
-    Node* rightchild;
+    struct Node* leftchild;
+    struct Node* rightchild;
     bool leftThread;
     bool rightThread;
 } Node;
@@ -56,6 +57,7 @@ Node* insertLeft(Node* child, Node* parent) {
         child->rightchild = parent;             // 삽입하려는 노드의 rightthread를 부모 노드로 설정
 
         findRightTreadNode(child->leftchild)->rightchild = child;       //마지막 리프노드의 thread 링크 조정 => 삽입하려는 노드로
+        //사실 위의 패러미터를 포함한 함수의 코드가 predecessor를 구하는 함수임. 반대로하면 insucc함수가 될 것이고
     }
 
     return child;       //child 포인터를 다시 내뱉음
